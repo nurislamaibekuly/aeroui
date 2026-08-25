@@ -1,12 +1,12 @@
-@import url('./components/spinner/spinner.css');
-@import url('./components/button/button.css');
-@import url('./components/toggle/toggle.css');
-@import url('./components/card/card.css');
-@import url('./components/input/input.css');
-@import url('./components/badge/badge.css');
-@import url('./components/segmented/segmented.css');
-@import url('./components/toast/toast.css');
-@import url('./components/modal/modal.css');
+@import url('https://nurislamaibekuly.github.io/aeroui/components/spinner/spinner.css');
+@import url('https://nurislamaibekuly.github.io/aeroui/components/button/button.css');
+@import url('https://nurislamaibekuly.github.io/aeroui/components/toggle/toggle.css');
+@import url('https://nurislamaibekuly.github.io/aeroui/components/card/card.css');
+@import url('https://nurislamaibekuly.github.io/aeroui/components/input/input.css');
+@import url('https://nurislamaibekuly.github.io/aeroui/components/badge/badge.css');
+@import url('https://nurislamaibekuly.github.io/aeroui/components/segmented/segmented.css');
+@import url('https://nurislamaibekuly.github.io/aeroui/components/toast/toast.css');
+@import url('https://nurislamaibekuly.github.io/aeroui/components/modal/modal.css');
 
 :root {
   --aero-primary: #ffffff;

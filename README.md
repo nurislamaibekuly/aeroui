@@ -26,8 +26,8 @@ aeroui/
 ## Getting started
 
 ```html
-<link rel="stylesheet" href="./src/aeroui.css">
-<script type="module" src="./src/components/button/button.js"></script>
+<link rel="stylesheet" href="https://nurislamaibekuly.github.io/aeroui/src/aeroui.css">
+<script type="module" src="https://nurislamaibekuly.github.io/aeroui/src/components/button/button.js"></script>
 ```
 
 ES modules require serving over HTTP (any static server works):
@@ -76,7 +76,7 @@ Haptics fire on click automatically (`light` by default). Per-button intensity v
 **Loading state (JS):**
 
 ```js
-import { setLoading } from './src/components/button/button.js';
+import { setLoading } from 'https://nurislamaibekuly.github.io/aeroui/src/components/button/button.js';
 
 setLoading(button, true);   // spinner in, label hidden, clicks blocked, aria-busy
 setLoading(button, false);  // restored
@@ -95,7 +95,7 @@ Zero layout shift — the label is hidden with `color: transparent`, not removed
 Auto-filled with an 8-spoke SVG on page load. For dynamically inserted spinners:
 
 ```js
-import { createSpinner } from './src/components/spinner/spinner.js';
+import { createSpinner } from 'https://nurislamaibekuly.github.io/aeroui/src/components/spinner/spinner.js';
 
 const el = createSpinner();       // pre-filled element
 el.classList.add('aero-spinner--sm');
@@ -162,7 +162,7 @@ Radio-based (arrow keys work). The white thumb slides with spring physics from t
 ### Toast
 
 ```js
-import { showToast } from './src/components/toast/toast.js';
+import { showToast } from 'https://nurislamaibekuly.github.io/aeroui/src/components/toast/toast.js';
 
 showToast({ message: 'Changes saved' });
 showToast({ message: 'Sending…', duration: 1500 });
@@ -204,7 +204,7 @@ Spring entrance, quick exit, backdrop click closes.
 Frame-rate independent springs. Each spring is solved analytically as a function of time, sampled once into a CSS `linear()` easing, and run through the Web Animations API — a 60 Hz and a 240 Hz screen render the identical trajectory, off the main thread.
 
 ```js
-import { animate, swap, PRESETS, springToEasing } from './src/core/motion.js';
+import { animate, swap, PRESETS, springToEasing } from 'https://nurislamaibekuly.github.io/aeroui/src/core/motion.js';
 
 animate(el, keyframes, { spring: { stiffness: 170, damping: 26 } });
 animate(el, keyframes, { spring: { duration: 0.3, bounce: 0 } });
@@ -224,7 +224,7 @@ Requires `linear()` easing support: Chrome 113+, Safari 17.2+, Firefox 112+.
 ### Haptics
 
 ```js
-import { bind, PATTERNS, stop } from './src/core/haptics.js';
+import { bind, PATTERNS, stop } from 'https://nurislamaibekuly.github.io/aeroui/src/core/haptics.js';
 
 bind(element, 'medium');   // Android: vibrate on click · iOS: invisible switch overlay
 bind(element, [30, 40, 30]);
@@ -248,7 +248,7 @@ Apple-style gradient backdrop blur: stacks `backdrop-filter` layers with overlap
 ```
 
 ```js
-import { ProgressiveBlur } from './src/core/progressive-blur.js';
+import { ProgressiveBlur } from 'https://nurislamaibekuly.github.io/aeroui/src/core/progressive-blur.js';
 
 const scrim = new ProgressiveBlur('#scrim', {
   position: 'top',              // 'bottom' | 'top' | 'left' | 'right' — strong edge
