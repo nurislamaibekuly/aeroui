@@ -1,0 +1,31 @@
+.aero-spinner {
+  display: inline-block;
+  width: 40px;
+  height: 40px;
+}
+
+.aero-spinner svg {
+  width: 100%;
+  height: 100%;
+}
+
+.aero-spinner rect {
+  animation: aero-fade 1s ease-in-out infinite;
+}
+
+.aero-spinner rect:nth-child(1) { animation-delay: 0s; }
+.aero-spinner rect:nth-child(2) { animation-delay: -0.875s; }
+.aero-spinner rect:nth-child(3) { animation-delay: -0.75s; }
+.aero-spinner rect:nth-child(4) { animation-delay: -0.625s; }
+.aero-spinner rect:nth-child(5) { animation-delay: -0.5s; }
+.aero-spinner rect:nth-child(6) { animation-delay: -0.375s; }
+.aero-spinner rect:nth-child(7) { animation-delay: -0.25s; }
+.aero-spinner rect:nth-child(8) { animation-delay: -0.125s; }
+
+@keyframes aero-fade {
+  0%, 100% { opacity: 0.1; }
+  12.5% { opacity: 0.8; }
+}
+
+.aero-spinner--sm { width: 20px; height: 20px; }
+.aero-spinner--lg { width: 64px; height: 64px; }

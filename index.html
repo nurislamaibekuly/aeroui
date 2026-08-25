@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>aeroui demo</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' rx='4' fill='%23000'/%3E%3Ccircle cx='8' cy='8' r='3.5' fill='%23fff'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="./src/aeroui.css">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: #000;
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      gap: 3rem;
+      padding: 3rem 1.5rem;
+      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+    h1 { font-weight: 300; letter-spacing: 0.2em; text-transform: uppercase; }
+    .row { display: flex; gap: 12px; align-items: center; justify-content: center; flex-wrap: wrap; }
+    #pop-dot { width: 44px; height: 44px; border-radius: 50%; background: #fff; opacity: 0; }
+    .card-row { display: flex; justify-content: space-between; align-items: center; }
+    .card-row + .card-row { margin-top: 14px; }
+    .card-row span { font-size: 14px; }
+    .aero-field { margin-bottom: 20px; }
+    .modal-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px; }
+  </style>
+</head>
+<body>
+  <h1>aeroui demo</h1>
+
+  <div class="row">
+    <div class="aero-spinner aero-spinner--sm"></div>
+    <div class="aero-spinner"></div>
+    <div class="aero-spinner aero-spinner--lg"></div>
+  </div>
+
+  <div class="row">
+    <button class="aero-btn">default</button>
+    <button class="aero-btn aero-btn--black">black</button>
+    <button class="aero-btn" disabled>disabled</button>
+  </div>
+
+  <div class="row">
+    <button class="aero-btn aero-btn--sm">Small</button>
+    <button class="aero-btn">Default</button>
+    <button class="aero-btn aero-btn--lg">Large</button>
+  </div>
+
+  <div class="row">
+    <button class="aero-btn" id="pop-btn">toggle</button>
+    <div id="pop-dot"></div>
+  </div>
+
+  <div class="row">
+    <button class="aero-btn aero-btn--black" id="save-btn">Save changes</button>
+  </div>
+
+  <div class="row">
+    <span class="aero-badge">default</span>
+    <span class="aero-badge aero-badge--dot">live</span>
+    <span class="aero-badge aero-badge--outline">beta</span>
+    <span class="aero-badge aero-badge--solid">new</span>
+  </div>
+
+  <div class="aero-segmented">
+    <label><input type="radio" name="aero-demo-seg" checked>Day</label>
+    <label><input type="radio" name="aero-demo-seg">Week</label>
+    <label><input type="radio" name="aero-demo-seg">Month</label>
+  </div>
+
+  <div class="row">
+    <button class="aero-btn" id="toast-btn">toast</button>
+    <button class="aero-btn aero-btn--black" data-aero-modal="demo-modal">modal</button>
+  </div>
+
+  <div class="aero-card">
+    <div class="aero-card-title">Settings</div>
+    <div class="aero-card-subtitle">Sign in to continue</div>
+
+    <label class="aero-field">
+      <input class="aero-input" type="email" placeholder=" ">
+      <span class="aero-field-label">Email</span>
+    </label>
+
+    <div class="card-row">
+      <span>Haptic feedback</span>
+      <label class="aero-toggle">
+        <input type="checkbox" checked>
+        <span class="aero-toggle-track"></span>
+      </label>
+    </div>
+
+    <div class="card-row">
+      <span>Reduced motion</span>
+      <label class="aero-toggle aero-toggle--sm">
+        <input type="checkbox">
+        <span class="aero-toggle-track"></span>
+      </label>
+    </div>
+  </div>
+
+  <dialog class="aero-modal" id="demo-modal">
+    <div class="aero-card-title">Delete workspace?</div>
+    <div class="aero-card-subtitle">This action cannot be undone.</div>
+    <div class="modal-actions">
+      <button class="aero-btn aero-btn--sm" data-aero-close>Cancel</button>
+      <button class="aero-btn aero-btn--sm aero-btn--black" data-aero-close>Delete</button>
+    </div>
+  </dialog>
+
+  <div id="aero-scrim-top" style="position: fixed; inset-inline: 0; top: -1px; z-index: 5;"></div>
+
+  <script type="module" src="./src/components/spinner/spinner.js"></script>
+  <script type="module" src="./src/components/button/button.js"></script>
+  <script type="module" src="./src/components/toggle/toggle.js"></script>
+  <script type="module" src="./src/components/segmented/segmented.js"></script>
+  <script type="module" src="./src/components/modal/modal.js"></script>
+  <script type="module">
+    import { swap, PRESETS } from './src/core/motion.js';
+    import { setLoading } from './src/components/button/button.js';
+    import { showToast } from './src/components/toast/toast.js';
+    import { ProgressiveBlur } from './src/core/progressive-blur.js';
+
+    new ProgressiveBlur('#aero-scrim-top', {
+      position: 'top',
+      strength: 10,
+      steps: 10,
+      size: '10vh',
+      falloff: 'perceptual',
+      saturate: 1.1,
+      tint: 'rgba(0, 0, 0, 0.35)',
+      hairline: false,
+    });
+
+    const togglePop = swap(document.getElementById('pop-dot'), PRESETS.bounceIn);
+    document.getElementById('pop-btn').addEventListener('click', togglePop);
+
+    const saveBtn = document.getElementById('save-btn');
+    saveBtn.addEventListener('click', () => {
+      setLoading(saveBtn, true);
+      setTimeout(() => setLoading(saveBtn, false), 2000);
+    });
+
+    document.getElementById('toast-btn').addEventListener('click', () => {
+      showToast({ message: 'Changes saved' });
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,31 @@
+.aero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.4;
+  background: rgba(120, 120, 128, 0.24);
+  color: #fff;
+}
+
+.aero-badge--solid {
+  background: #fff;
+  color: #000;
+}
+
+.aero-badge--outline {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  padding: 2px 9px;
+}
+
+.aero-badge--dot::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+}

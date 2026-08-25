@@ -1,0 +1,57 @@
+.aero-field {
+  position: relative;
+  display: block;
+}
+
+.aero-input {
+  width: 100%;
+  padding: 24px 14px 8px;
+  font-family: inherit;
+  font-size: 15px;
+  color: #fff;
+  background: rgba(118, 118, 128, 0.18);
+  border: 1px solid transparent;
+  border-radius: 12px;
+  outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+}
+
+.aero-input:hover {
+  background: rgba(118, 118, 128, 0.24);
+}
+
+.aero-input:focus {
+  border-color: var(--aero-primary);
+  box-shadow: 0 0 0 3.5px rgba(255, 255, 255, 0.18);
+}
+
+.aero-input::placeholder {
+  color: transparent;
+}
+
+.aero-input:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.aero-field-label {
+  position: absolute;
+  left: 15px;
+  top: 17px;
+  font-size: 15px;
+  line-height: 1;
+  color: rgba(235, 235, 245, 0.55);
+  pointer-events: none;
+  transition: all 0.15s ease;
+}
+
+.aero-input:focus ~ .aero-field-label,
+.aero-input:not(:placeholder-shown) ~ .aero-field-label {
+  top: 9px;
+  font-size: 11px;
+  color: rgba(235, 235, 245, 0.45);
+}
+
+.aero-input:focus ~ .aero-field-label {
+  color: var(--aero-primary);
+}

@@ -1,0 +1,76 @@
+.aero-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 8px 18px;
+  border: none;
+  border-radius: 8px;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 400;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background: rgba(230, 230, 230, 1.0);
+  color: #000;
+}
+
+.aero-btn:not(:disabled):hover {
+  background: rgba(200, 200, 200, 1.0);
+}
+
+.aero-btn:not(:disabled):active {
+  transform: scale(0.97);
+}
+
+.aero-btn:disabled {
+  background: rgba(120, 120, 128, 0.22);
+  color: rgba(235, 235, 245, 0.32);
+  cursor: not-allowed;
+  transform: none;
+}
+
+.aero-btn--black {
+  background: #1c1c1e;
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.aero-btn--black:not(:disabled):hover {
+  background: #2c2c2e;
+}
+
+.aero-btn--black:not(:disabled):active {
+  background: #1c1c1e;
+}
+
+/* Sizes */
+.aero-btn--sm {
+  padding: 5px 12px;
+  font-size: 12px;
+  border-radius: 6px;
+}
+
+.aero-btn--lg {
+  padding: 16px 32px;
+  font-size: 17px;
+  border-radius: 14px;
+}
+
+/* Loading */
+.aero-btn--loading {
+  position: relative;
+  pointer-events: none;
+  color: transparent;
+}
+
+.aero-btn--loading .aero-spinner {
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  color: #000;
+}
+
+.aero-btn--loading.aero-btn--black .aero-spinner {
+  color: #fff;
+}

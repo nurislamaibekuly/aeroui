@@ -1,0 +1,21 @@
+@import url('./components/spinner/spinner.css');
+@import url('./components/button/button.css');
+@import url('./components/toggle/toggle.css');
+@import url('./components/card/card.css');
+@import url('./components/input/input.css');
+@import url('./components/badge/badge.css');
+@import url('./components/segmented/segmented.css');
+@import url('./components/toast/toast.css');
+@import url('./components/modal/modal.css');
+
+:root {
+  --aero-primary: #ffffff;
+  --aero-bg: #000000;
+  --aero-fg: #ffffff;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
