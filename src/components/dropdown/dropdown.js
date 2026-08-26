@@ -78,7 +78,9 @@ function openMenu(triggerOrMenu) {
     if (!item.hasAttribute('tabindex')) item.tabIndex = -1;
   });
 
-  menu.classList.add('aero-menu--open', 'aero-menu--portaled');
+  menu.style.position = 'fixed';
+  menu.style.zIndex = '99999';
+  menu.classList.add('aero-menu--open');
   positionMenu(menu, trigger);
   animate(menu, [ENTER.hidden, ENTER.shown], { spring: { duration: 0.3, bounce: 0.15 } });
   trigger.setAttribute('aria-expanded', 'true');
@@ -94,9 +96,11 @@ function closeMenu(triggerOrMenu) {
   animate(menu, [ENTER.shown, ENTER.hidden], { spring: { duration: 0.18, bounce: 0 } })
     .finished.then(() => {
       menu._aeroClosing = false;
-      menu.classList.remove('aero-menu--open', 'aero-menu--portaled');
+      menu.classList.remove('aero-menu--open');
       menu.style.top = '';
       menu.style.left = '';
+      menu.style.position = '';
+      menu.style.zIndex = '';
 
       if (menu._originalParent) {
         menu._originalParent.appendChild(menu);
