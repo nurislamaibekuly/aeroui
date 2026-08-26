@@ -5,13 +5,20 @@ Black & white, dependency-free UI components for the web. Vanilla CSS + ES modul
 ```
 aeroui/
 ├── index.html                        demo page
+├── scripts/
+│   └── switch-env.sh                 toggle imports: relative ./ ↔ GitHub Pages CDN
 └── src/
     ├── aeroui.css                    entry point — imports all components + design tokens
     ├── components/
+    │   ├── accordion/accordion.css · accordion.js
     │   ├── badge/badge.css
     │   ├── button/button.css · button.js
     │   ├── card/card.css
+    │   ├── dropdown/dropdown.css · dropdown.js
     │   ├── input/input.css
+│   ├── progress/progress.css · progress.js
+│   ├── slider/slider.css · slider.js
+│   ├── tooltip/tooltip.css · tooltip.js
     │   ├── modal/modal.css · modal.js
     │   ├── segmented/segmented.css · segmented.js
     │   ├── spinner/spinner.css · spinner.js
@@ -34,6 +41,17 @@ ES modules require serving over HTTP (any static server works):
 
 ```bash
 python3 -m http.server
+```
+
+### Debug vs release
+
+Imports in `index.html` and `src/aeroui.css` carry a full base URL. Switch between local debugging (relative `./` paths) and the GitHub Pages CDN:
+
+```bash
+scripts/switch-env.sh dev       # point imports at relative ./
+python3 -m http.server          # serve the repo root
+scripts/switch-env.sh release   # restore CDN URLs (commit/deploy in this state)
+scripts/switch-env.sh status    # show the active environment
 ```
 
 Components with a `.js` file auto-initialize on `DOMContentLoaded`. CSS-only components (badge, card, input) need nothing but the stylesheet.
@@ -147,6 +165,88 @@ The label floats up on focus/fill (requires `placeholder=" "`). Focus ring uses 
 <span class="aero-badge aero-badge--dot">live</span>
 ```
 
+### Progress bar
+
+```html
+<div class="aero-progress" data-aero-progress="55"></div>
+<div class="aero-progress aero-progress--sm" data-aero-progress="25"></div>
+<div class="aero-progress aero-progress--lg" data-aero-progress="80"></div>
+<div class="aero-progress aero-progress--indeterminate"></div>
+```
+
+Width is `100%` by default — constrain with a container or inline style. `data-aero-progress` seeds the value on page load; the fill uses `--aero-primary`. CSS-only usage (no script tag): add the fill yourself —
+
+```html
+<div class="aero-progress"><div class="aero-progress-fill" style="width: 55%"></div></div>
+```
+
+For dynamic updates:
+
+```js
+import { setProgress, createProgress } from 'https://nurislamaibekuly.github.io/aeroui/src/components/progress/progress.js';
+
+setProgress(el, 70);        // clamps 0–100, updates fill + aria-valuenow
+const el = createProgress(40);  // pre-filled element
+container.append(el);
+```
+
+| Class | Description |
+|---|---|
+| `aero-progress--sm` / `aero-progress--lg` | Size modifiers (2px / 8px tall) |
+| `aero-progress--indeterminate` | Looping sweep; no `aria-valuenow`, respects reduced motion |
+
+ARIA (`role="progressbar"`, min/max/now) is managed for you.
+
+### Tooltip
+
+```html
+<button data-aero-tooltip="Saves your changes">save</button>
+<button data-aero-tooltip="Right side" data-aero-tooltip-pos="right">right</button>
+<button data-aero-tooltip="Bottom side" data-aero-tooltip-pos="bottom">bottom</button>
+<button data-aero-tooltip="Left side" data-aero-tooltip-pos="left">left</button>
+```
+
+Attribute-driven and CSS-only (the script just mirrors the text into `aria-label`). Shows on hover and keyboard focus after a short delay, with a 0.1s fade-out. Glassmorphism bubble matching the dropdown menu. Position defaults to `top`; override with `data-aero-tooltip-pos="top|bottom|left|right"`. Long text wraps at `240px`.
+
+Note: absolutely positioned, so `overflow: hidden` ancestors will clip it.
+
+### Slider
+
+```html
+<input class="aero-slider" type="range" min="0" max="100" value="55">
+<input class="aero-slider aero-slider--sm" type="range" min="0" max="100" value="25">
+<input class="aero-slider aero-slider--lg" type="range" min="0" max="100" value="80">
+```
+
+A native `<input type="range">` — keyboard arrows, `Home`/`End`, and screen readers come free. The white fill up to the thumb is kept in sync by JS (`--aero-fill`); min/max/value are the native attributes. Thumb scales up on hover/drag, focus ring on the thumb.
+
+For dynamically inserted sliders:
+
+```js
+import { updateSlider } from 'https://nurislamaibekuly.github.io/aeroui/src/components/slider/slider.js';
+
+updateSlider(el);   // re-sync fill after changing value programmatically
+```
+
+| Class | Description |
+|---|---|
+| `aero-slider--sm` / `aero-slider--lg` | Size modifiers (17px / 27px thumb) |
+
+### Accordion
+
+Native `<details>/<summary>` — keyboard and screen reader support comes free. Springs handle the height animation via the [motion](#motion) engine.
+
+```html
+<details class="aero-accordion">
+  <summary>Section title</summary>
+  <div class="aero-accordion-content">
+    <div class="aero-accordion-inner">Content here</div>
+  </div>
+</details>
+```
+
+Multiple accordions stack automatically. Open/close animations use different spring configs (slow in, quick out) — matching the modal pattern.
+
 ### Segmented control
 
 ```html
@@ -158,6 +258,24 @@ The label floats up on focus/fill (requires `placeholder=" "`). Focus ring uses 
 ```
 
 Radio-based (arrow keys work). The white thumb slides with spring physics from the [motion](#motion) engine and repositions on resize.
+
+### Dropdown
+
+```html
+<div class="aero-dropdown">
+  <button class="aero-btn" data-aero-dropdown>options</button>
+  <div class="aero-menu">
+    <button class="aero-menu-item">Duplicate</button>
+    <button class="aero-menu-item" disabled>Move to Trash</button>
+    <div class="aero-menu-separator"></div>
+    <button class="aero-menu-item">Archive</button>
+  </div>
+</div>
+
+<div class="aero-dropdown aero-dropdown--right"> ... </div>  <!-- align menu right -->
+```
+
+Glassmorphism menu anchored below the trigger. Closes on outside click, `Esc`, or item click; arrow keys navigate items (`Home`/`End` jump). Spring entrance, quick exit, haptics on trigger and items. Roles (`menu`/`menuitem`) are added automatically.
 
 ### Toast
 
@@ -193,7 +311,7 @@ Native `<dialog>` — Esc and focus trapping come free.
 | `data-aero-modal="id"` | button | Opens the modal with that id |
 | `data-aero-close` | button inside | Closes it |
 
-Spring entrance, quick exit, backdrop click closes.
+Spring entrance, quick exit, backdrop fades in and out with them. Backdrop click closes.
 
 ---
 

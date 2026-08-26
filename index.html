@@ -67,10 +67,76 @@
     <span class="aero-badge aero-badge--solid">new</span>
   </div>
 
+  <div class="row">
+    <button class="aero-btn" data-aero-tooltip="top tooltip">top</button>
+    <button class="aero-btn" data-aero-tooltip="right tooltip" data-aero-tooltip-pos="right">right</button>
+    <button class="aero-btn" data-aero-tooltip="bottom tooltip" data-aero-tooltip-pos="bottom">bottom</button>
+    <button class="aero-btn" data-aero-tooltip="left tooltip" data-aero-tooltip-pos="left">left</button>
+  </div>
+
+  <div class="row">
+    <input class="aero-slider aero-slider--sm" type="range" min="0" max="100" value="25">
+    <input class="aero-slider" type="range" min="0" max="100" value="55">
+    <input class="aero-slider aero-slider--lg" type="range" min="0" max="100" value="80">
+  </div>
+
+  <div class="row">
+    <div class="aero-progress aero-progress--sm" data-aero-progress="25" style="width: 140px;"></div>
+    <div class="aero-progress" data-aero-progress="55" style="width: 200px;"></div>
+    <div class="aero-progress aero-progress--lg aero-progress--indeterminate" style="width: 160px;"></div>
+  </div>
+
+  <div class="row">
+    <button class="aero-btn" id="progress-btn">load</button>
+    <div class="aero-progress" id="progress-bar" style="width: 220px;"></div>
+  </div>
+
+  <div style="width: 320px;">
+    <details class="aero-accordion">
+      <summary>What is aeroui?</summary>
+      <div class="aero-accordion-content">
+        <div class="aero-accordion-inner">Black & white, dependency-free UI components for the web. Vanilla CSS + ES modules.</div>
+      </div>
+    </details>
+    <details class="aero-accordion">
+      <summary>How do I use it?</summary>
+      <div class="aero-accordion-content">
+        <div class="aero-accordion-inner">Link the stylesheet, add the script tags, and use the HTML classes. No build step required.</div>
+      </div>
+    </details>
+    <details class="aero-accordion">
+      <summary>Is it accessible?</summary>
+      <div class="aero-accordion-content">
+        <div class="aero-accordion-inner">Yes. Native elements like checkbox, range, dialog, and details/summary are used throughout.</div>
+      </div>
+    </details>
+  </div>
+
   <div class="aero-segmented">
     <label><input type="radio" name="aero-demo-seg" checked>Day</label>
     <label><input type="radio" name="aero-demo-seg">Week</label>
     <label><input type="radio" name="aero-demo-seg">Month</label>
+  </div>
+
+  <div class="row">
+    <div class="aero-dropdown">
+      <button class="aero-btn" data-aero-dropdown>options</button>
+      <div class="aero-menu">
+        <button class="aero-menu-item">Duplicate</button>
+        <button class="aero-menu-item">Rename…</button>
+        <div class="aero-menu-separator"></div>
+        <button class="aero-menu-item">Move to Trash</button>
+      </div>
+    </div>
+
+    <div class="aero-dropdown aero-dropdown--right">
+      <button class="aero-btn aero-btn--black" data-aero-dropdown>actions</button>
+      <div class="aero-menu">
+        <button class="aero-menu-item">Share…</button>
+        <button class="aero-menu-item" disabled>Export PDF</button>
+        <button class="aero-menu-item">Archive</button>
+      </div>
+    </div>
   </div>
 
   <div class="row">
@@ -120,10 +186,16 @@
   <script type="module" src="https://nurislamaibekuly.github.io/aeroui/src/components/toggle/toggle.js"></script>
   <script type="module" src="https://nurislamaibekuly.github.io/aeroui/src/components/segmented/segmented.js"></script>
   <script type="module" src="https://nurislamaibekuly.github.io/aeroui/src/components/modal/modal.js"></script>
+  <script type="module" src="https://nurislamaibekuly.github.io/aeroui/src/components/dropdown/dropdown.js"></script>
+  <script type="module" src="https://nurislamaibekuly.github.io/aeroui/src/components/progress/progress.js"></script>
+  <script type="module" src="https://nurislamaibekuly.github.io/aeroui/src/components/tooltip/tooltip.js"></script>
+  <script type="module" src="https://nurislamaibekuly.github.io/aeroui/src/components/slider/slider.js"></script>
+  <script type="module" src="https://nurislamaibekuly.github.io/aeroui/src/components/accordion/accordion.js"></script>
   <script type="module">
     import { swap, PRESETS } from 'https://nurislamaibekuly.github.io/aeroui/src/core/motion.js';
     import { setLoading } from 'https://nurislamaibekuly.github.io/aeroui/src/components/button/button.js';
     import { showToast } from 'https://nurislamaibekuly.github.io/aeroui/src/components/toast/toast.js';
+    import { setProgress } from 'https://nurislamaibekuly.github.io/aeroui/src/components/progress/progress.js';
     import { ProgressiveBlur } from 'https://nurislamaibekuly.github.io/aeroui/src/core/progressive-blur.js';
 
     new ProgressiveBlur('#aero-scrim-top', {
@@ -148,6 +220,18 @@
 
     document.getElementById('toast-btn').addEventListener('click', () => {
       showToast({ message: 'Changes saved' });
+    });
+
+    const bar = document.getElementById('progress-bar');
+    let progressTimer;
+    document.getElementById('progress-btn').addEventListener('click', () => {
+      clearInterval(progressTimer);
+      setProgress(bar, 0);
+      progressTimer = setInterval(() => {
+        const v = Math.min(100, parseFloat(bar.getAttribute('aria-valuenow')) + Math.random() * 18 + 4);
+        setProgress(bar, v);
+        if (v >= 100) clearInterval(progressTimer);
+      }, 260);
     });
   </script>
 </body>

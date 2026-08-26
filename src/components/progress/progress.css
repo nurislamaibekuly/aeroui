@@ -1,0 +1,37 @@
+.aero-progress {
+  position: relative;
+  width: 100%;
+  height: 4px;
+  border-radius: 999px;
+  background: rgba(120, 120, 128, 0.24);
+  overflow: hidden;
+}
+
+.aero-progress-fill {
+  width: 0%;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--aero-primary);
+  transition: width 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.aero-progress--indeterminate .aero-progress-fill {
+  width: 38%;
+  animation: aero-progress-sweep 1.3s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite;
+}
+
+@keyframes aero-progress-sweep {
+  from { transform: translateX(-110%); }
+  to { transform: translateX(370%); }
+}
+
+.aero-progress--sm { height: 2px; }
+.aero-progress--lg { height: 8px; }
+
+@media (prefers-reduced-motion: reduce) {
+  .aero-progress-fill { transition: none; }
+  .aero-progress--indeterminate .aero-progress-fill {
+    animation: none;
+    width: 50%;
+  }
+}

@@ -1,0 +1,83 @@
+[data-aero-tooltip] {
+  position: relative;
+}
+
+[data-aero-tooltip]::after {
+  content: attr(data-aero-tooltip);
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  translate: -50% 4px;
+  width: max-content;
+  max-width: 240px;
+  padding: 6px 10px;
+  border-radius: 10px;
+  background: rgba(28, 28, 30, 0.85);
+  backdrop-filter: blur(24px) saturate(150%);
+  -webkit-backdrop-filter: blur(24px) saturate(150%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.45);
+  color: #fff;
+  font-size: 12px;
+  line-height: 1.4;
+  text-align: center;
+  white-space: normal;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 100;
+  transition: opacity 0.1s ease, translate 0.1s ease;
+}
+
+[data-aero-tooltip]:hover::after,
+[data-aero-tooltip]:focus-visible::after {
+  opacity: 1;
+  translate: -50% 0;
+  transition: opacity 0.18s ease 0.25s, translate 0.18s ease 0.25s;
+}
+
+[data-aero-tooltip][data-aero-tooltip-pos='bottom']::after {
+  top: calc(100% + 8px);
+  bottom: auto;
+  translate: -50% -4px;
+}
+
+[data-aero-tooltip][data-aero-tooltip-pos='bottom']:hover::after,
+[data-aero-tooltip][data-aero-tooltip-pos='bottom']:focus-visible::after {
+  translate: -50% 0;
+}
+
+[data-aero-tooltip][data-aero-tooltip-pos='left']::after,
+[data-aero-tooltip][data-aero-tooltip-pos='right']::after {
+  top: 50%;
+  bottom: auto;
+}
+
+[data-aero-tooltip][data-aero-tooltip-pos='left']::after {
+  right: calc(100% + 8px);
+  left: auto;
+  translate: 4px -50%;
+}
+
+[data-aero-tooltip][data-aero-tooltip-pos='right']::after {
+  left: calc(100% + 8px);
+  translate: -4px -50%;
+}
+
+[data-aero-tooltip][data-aero-tooltip-pos='left']:hover::after,
+[data-aero-tooltip][data-aero-tooltip-pos='left']:focus-visible::after {
+  translate: 0 -50%;
+}
+
+[data-aero-tooltip][data-aero-tooltip-pos='right']:hover::after,
+[data-aero-tooltip][data-aero-tooltip-pos='right']:focus-visible::after {
+  translate: 0 -50%;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-aero-tooltip]::after,
+  [data-aero-tooltip]:hover::after,
+  [data-aero-tooltip]:focus-visible::after {
+    transition-delay: 0s;
+    transition-duration: 0s;
+  }
+}

@@ -1,24 +1,39 @@
 import { animate } from '../../core/motion.js';
 
 const ENTER = {
-  hidden: { opacity: 0, transform: 'scale(0.95) translateY(12px)' },
-  shown: { opacity: 1, transform: 'scale(1) translateY(0)' },
+  hidden: { opacity: 0, transform: 'scale(1.2)' },
+  shown: { opacity: 1, transform: 'scale(1)' },
+};
+
+const BACKDROP = {
+  hidden: { opacity: 0 },
+  shown: { opacity: 1 },
 };
 
 function openModal(dialog) {
   if (dialog.open) return;
   dialog.showModal();
   animate(dialog, [ENTER.hidden, ENTER.shown], { spring: { duration: 0.4, bounce: 0.18 } });
+  animate(dialog, [BACKDROP.hidden, BACKDROP.shown], {
+    spring: { duration: 0.3, bounce: 0 },
+    pseudoElement: '::backdrop',
+  });
 }
 
 function closeModal(dialog) {
   if (!dialog.open || dialog._aeroClosing) return;
   dialog._aeroClosing = true;
-  animate(dialog, [ENTER.shown, ENTER.hidden], { spring: { duration: 0.18, bounce: 0 } })
-    .finished.then(() => {
-      dialog._aeroClosing = false;
-      dialog.close();
-    });
+
+  const panel = animate(dialog, [ENTER.shown, ENTER.hidden], { spring: { duration: 0.18, bounce: 0 } });
+  const backdrop = animate(dialog, [BACKDROP.shown, BACKDROP.hidden], {
+    spring: { duration: 0.18, bounce: 0 },
+    pseudoElement: '::backdrop',
+  });
+
+  Promise.all([panel.finished, backdrop.finished]).then(() => {
+    dialog._aeroClosing = false;
+    dialog.close();
+  });
 }
 
 function initModals(root = document) {

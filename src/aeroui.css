@@ -1,12 +1,17 @@
+@import url('https://nurislamaibekuly.github.io/aeroui/src/components/accordion/accordion.css');
 @import url('https://nurislamaibekuly.github.io/aeroui/src/components/spinner/spinner.css');
 @import url('https://nurislamaibekuly.github.io/aeroui/src/components/button/button.css');
 @import url('https://nurislamaibekuly.github.io/aeroui/src/components/toggle/toggle.css');
 @import url('https://nurislamaibekuly.github.io/aeroui/src/components/card/card.css');
 @import url('https://nurislamaibekuly.github.io/aeroui/src/components/input/input.css');
+@import url('https://nurislamaibekuly.github.io/aeroui/src/components/progress/progress.css');
+@import url('https://nurislamaibekuly.github.io/aeroui/src/components/slider/slider.css');
+@import url('https://nurislamaibekuly.github.io/aeroui/src/components/tooltip/tooltip.css');
 @import url('https://nurislamaibekuly.github.io/aeroui/src/components/badge/badge.css');
 @import url('https://nurislamaibekuly.github.io/aeroui/src/components/segmented/segmented.css');
 @import url('https://nurislamaibekuly.github.io/aeroui/src/components/toast/toast.css');
 @import url('https://nurislamaibekuly.github.io/aeroui/src/components/modal/modal.css');
+@import url('https://nurislamaibekuly.github.io/aeroui/src/components/dropdown/dropdown.css');
 
 :root {
   --aero-primary: #ffffff;

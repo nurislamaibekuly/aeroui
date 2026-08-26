@@ -63,6 +63,7 @@ function animate(el, keyframes, options = {}) {
     delay: options.delay ?? 0,
     easing,
     fill: 'both',
+    ...(options.pseudoElement ? { pseudoElement: options.pseudoElement } : {}),
   });
   anim.finished.catch(() => {});
   return anim;

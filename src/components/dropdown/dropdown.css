@@ -1,0 +1,68 @@
+.aero-dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.aero-menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  min-width: 180px;
+  padding: 5px;
+  border-radius: 14px;
+  background: rgba(28, 28, 30, 0.85);
+  backdrop-filter: blur(24px) saturate(150%);
+  -webkit-backdrop-filter: blur(24px) saturate(150%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.45);
+  z-index: 50;
+  display: none;
+  transform-origin: top center;
+}
+
+.aero-menu--open {
+  display: block;
+}
+
+.aero-dropdown--right .aero-menu {
+  left: auto;
+  right: 0;
+}
+
+.aero-menu-item {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 7px 10px;
+  border: none;
+  border-radius: 9px;
+  background: transparent;
+  color: #fff;
+  font-family: inherit;
+  font-size: 13px;
+  text-align: left;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.aero-menu-item:not(:disabled):hover,
+.aero-menu-item:focus-visible {
+  background: rgba(255, 255, 255, 0.1);
+  outline: none;
+}
+
+.aero-menu-item:focus-visible {
+  outline: 2px solid rgba(255, 255, 255, 0.35);
+  outline-offset: -2px;
+}
+
+.aero-menu-item:disabled {
+  color: rgba(235, 235, 245, 0.3);
+  cursor: not-allowed;
+}
+
+.aero-menu-separator {
+  height: 1px;
+  margin: 5px 9px;
+  background: rgba(255, 255, 255, 0.08);
+}
