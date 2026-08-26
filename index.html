@@ -28,6 +28,7 @@
     .card-row span { font-size: 14px; }
     .aero-field { margin-bottom: 20px; }
     .modal-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px; }
+    .app-icon-demo { display: flex; flex-direction: column; align-items: center; gap: 10px; }
   </style>
 </head>
 <body>
@@ -89,6 +90,38 @@
   <div class="row">
     <button class="aero-btn" id="progress-btn">load</button>
     <div class="aero-progress" id="progress-bar" style="width: 220px;"></div>
+  </div>
+
+  <div class="row">
+    <div class="aero-pie aero-pie--sm" data-aero-pie-progress="25">
+      <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 120'%3E%3Crect width='120' height='120' rx='24' fill='%235e5ce6'/%3E%3Ctext x='60' y='72' text-anchor='middle' font-size='48' fill='%23fff'%3E%F0%9F%8E%B3%3C/text%3E%3C/svg%3E" alt="">
+    </div>
+    <div class="aero-pie" data-aero-pie-progress="55">
+      <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 120'%3E%3Crect width='120' height='120' rx='24' fill='%23bf5af2'/%3E%3Ctext x='60' y='72' text-anchor='middle' font-size='48' fill='%23fff'%3E%F0%9F%8E%A7%3C/text%3E%3C/svg%3E" alt="">
+    </div>
+    <div class="aero-pie aero-pie--lg" data-aero-pie-progress="80">
+      <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 120'%3E%3Crect width='120' height='120' rx='24' fill='%2330d158'/%3E%3Ctext x='60' y='72' text-anchor='middle' font-size='48' fill='%23fff'%3E%F0%9F%93%B1%3C/text%3E%3C/svg%3E" alt="">
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="aero-pie aero-pie--ring aero-pie--sm" data-aero-pie-progress="30"></div>
+    <div class="aero-pie aero-pie--ring" data-aero-pie-progress="60"></div>
+    <div class="aero-pie aero-pie--ring aero-pie--lg" data-aero-pie-progress="90"></div>
+  </div>
+
+  <div class="row">
+    <button class="aero-btn" id="pie-btn">animate</button>
+    <div class="aero-pie aero-pie--ring" id="pie-demo"></div>
+  </div>
+
+  <div class="row">
+    <div class="app-icon-demo" id="app-icon-demo">
+      <div class="aero-pie aero-pie--lg" id="app-icon-pie">
+        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 120'%3E%3Crect width='120' height='120' rx='26' fill='%23007AFF'/%3E%3Ctext x='60' y='78' text-anchor='middle' font-size='56' fill='%23fff'%3E%F0%9F%8E%A7%3C/text%3E%3C/svg%3E" alt="">
+      </div>
+      <button class="aero-btn aero-btn--sm" id="app-install-btn">Install</button>
+    </div>
   </div>
 
   <div style="width: 320px;">
@@ -181,21 +214,23 @@
 
   <div id="aero-scrim-top" style="position: fixed; inset-inline: 0; top: -1px; z-index: 5;"></div>
 
-  <script type="module" src="https://nurislamaibekuly.github.io/aeroui/src/components/spinner/spinner.js"></script>
-  <script type="module" src="https://nurislamaibekuly.github.io/aeroui/src/components/button/button.js"></script>
-  <script type="module" src="https://nurislamaibekuly.github.io/aeroui/src/components/toggle/toggle.js"></script>
-  <script type="module" src="https://nurislamaibekuly.github.io/aeroui/src/components/segmented/segmented.js"></script>
-  <script type="module" src="https://nurislamaibekuly.github.io/aeroui/src/components/modal/modal.js"></script>
-  <script type="module" src="https://nurislamaibekuly.github.io/aeroui/src/components/dropdown/dropdown.js"></script>
-  <script type="module" src="https://nurislamaibekuly.github.io/aeroui/src/components/progress/progress.js"></script>
-  <script type="module" src="https://nurislamaibekuly.github.io/aeroui/src/components/tooltip/tooltip.js"></script>
-  <script type="module" src="https://nurislamaibekuly.github.io/aeroui/src/components/slider/slider.js"></script>
-  <script type="module" src="https://nurislamaibekuly.github.io/aeroui/src/components/accordion/accordion.js"></script>
   <script type="module">
+    import 'https://nurislamaibekuly.github.io/aeroui/src/components/spinner/spinner.js';
+    import 'https://nurislamaibekuly.github.io/aeroui/src/components/button/button.js';
+    import 'https://nurislamaibekuly.github.io/aeroui/src/components/toggle/toggle.js';
+    import 'https://nurislamaibekuly.github.io/aeroui/src/components/segmented/segmented.js';
+    import 'https://nurislamaibekuly.github.io/aeroui/src/components/modal/modal.js';
+    import 'https://nurislamaibekuly.github.io/aeroui/src/components/dropdown/dropdown.js';
+    import 'https://nurislamaibekuly.github.io/aeroui/src/components/progress/progress.js';
+    import 'https://nurislamaibekuly.github.io/aeroui/src/components/tooltip/tooltip.js';
+    import 'https://nurislamaibekuly.github.io/aeroui/src/components/slider/slider.js';
+    import 'https://nurislamaibekuly.github.io/aeroui/src/components/accordion/accordion.js';
+    import 'https://nurislamaibekuly.github.io/aeroui/src/components/pie-progress/pie-progress.js';
     import { swap, PRESETS } from 'https://nurislamaibekuly.github.io/aeroui/src/core/motion.js';
     import { setLoading } from 'https://nurislamaibekuly.github.io/aeroui/src/components/button/button.js';
     import { showToast } from 'https://nurislamaibekuly.github.io/aeroui/src/components/toast/toast.js';
     import { setProgress } from 'https://nurislamaibekuly.github.io/aeroui/src/components/progress/progress.js';
+    import { setPieProgress } from 'https://nurislamaibekuly.github.io/aeroui/src/components/pie-progress/pie-progress.js';
     import { ProgressiveBlur } from 'https://nurislamaibekuly.github.io/aeroui/src/core/progressive-blur.js';
 
     new ProgressiveBlur('#aero-scrim-top', {
@@ -232,6 +267,67 @@
         setProgress(bar, v);
         if (v >= 100) clearInterval(progressTimer);
       }, 260);
+    });
+
+    const pieDemo = document.getElementById('pie-demo');
+    let pieRaf;
+    document.getElementById('pie-btn').addEventListener('click', () => {
+      cancelAnimationFrame(pieRaf);
+      setPieProgress(pieDemo, 0);
+      let v = 0, last = 0;
+      const tick = t => {
+        if (!last) last = t;
+        if (t - last > 16) {
+          v = Math.min(100, v + (t - last) * 0.06);
+          setPieProgress(pieDemo, v);
+          last = t;
+        }
+        if (v < 100) pieRaf = requestAnimationFrame(tick);
+      };
+      pieRaf = requestAnimationFrame(tick);
+    });
+
+    const appIconPie = document.getElementById('app-icon-pie');
+    const appInstallBtn = document.getElementById('app-install-btn');
+    let appRaf;
+
+    function easeOutCubic(t) { return 1 - Math.pow(1 - t, 3); }
+
+    setPieProgress(appIconPie, 0);
+    requestAnimationFrame(() => {
+      const appFill = appIconPie.querySelector('.aero-pie-fill');
+      if (appFill) appFill.style.opacity = '0';
+    });
+
+    appInstallBtn.addEventListener('click', () => {
+      cancelAnimationFrame(appRaf);
+      appInstallBtn.disabled = true;
+      appInstallBtn.textContent = 'Installing…';
+
+      const appFill = appIconPie.querySelector('.aero-pie-fill');
+      setPieProgress(appIconPie, 0);
+      appFill.style.transition = 'opacity 0.7s ease';
+      appFill.style.opacity = '1';
+
+      setTimeout(() => {
+        appFill.style.transition = '';
+        const duration = 4000;
+        let start = 0;
+        function download(t) {
+          if (!start) start = t;
+          const raw = Math.min((t - start) / duration, 1);
+          setPieProgress(appIconPie, easeOutCubic(raw) * 100);
+          if (raw < 1) {
+            appRaf = requestAnimationFrame(download);
+          } else {
+            setTimeout(() => {
+              appInstallBtn.disabled = false;
+              appInstallBtn.textContent = 'Open';
+            }, 300);
+          }
+        }
+        appRaf = requestAnimationFrame(download);
+      }, 1000);
     });
   </script>
 </body>

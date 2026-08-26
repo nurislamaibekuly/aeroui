@@ -10,8 +10,12 @@ function isOpen(menu) {
   return menu.classList.contains('aero-menu--open');
 }
 
+function dropdownOf(menu) {
+  return menu._dropdownRef || menu.closest('.aero-dropdown');
+}
+
 function triggerOf(menu) {
-  return menu.closest('.aero-dropdown')?.querySelector('[data-aero-dropdown]');
+  return dropdownOf(menu)?.querySelector('[data-aero-dropdown]');
 }
 
 function enabledItems(menu) {
@@ -28,6 +32,31 @@ function closeAllMenus(except = null) {
   });
 }
 
+function positionMenu(menu, trigger) {
+  const rect = trigger.getBoundingClientRect();
+  const menuW = menu.offsetWidth || 180;
+  const menuH = menu.offsetHeight || 200;
+  const gap = 6;
+
+  let top = rect.bottom + gap;
+  let left = rect.left;
+
+  if (dropdownOf(menu)?.classList.contains('aero-dropdown--right')) {
+    left = rect.right - menuW;
+  }
+
+  if (left + menuW > window.innerWidth) left = window.innerWidth - menuW - 8;
+  if (left < 8) left = 8;
+
+  if (top + menuH > window.innerHeight) {
+    top = rect.top - gap - menuH;
+  }
+  if (top < 8) top = 8;
+
+  menu.style.top = top + 'px';
+  menu.style.left = left + 'px';
+}
+
 function openMenu(triggerOrMenu) {
   const menu = triggerOrMenu.classList?.contains('aero-menu')
     ? triggerOrMenu
@@ -38,12 +67,19 @@ function openMenu(triggerOrMenu) {
   closeAllMenus(menu);
   stopAnimations(menu);
   delete menu._aeroClosing;
+
+  menu._dropdownRef = trigger.closest('.aero-dropdown');
+  menu._originalParent = menu.parentElement;
+  document.body.appendChild(menu);
+
   menu.setAttribute('role', 'menu');
   menu.querySelectorAll('.aero-menu-item').forEach(item => {
     item.setAttribute('role', 'menuitem');
     if (!item.hasAttribute('tabindex')) item.tabIndex = -1;
   });
-  menu.classList.add('aero-menu--open');
+
+  menu.classList.add('aero-menu--open', 'aero-menu--portaled');
+  positionMenu(menu, trigger);
   animate(menu, [ENTER.hidden, ENTER.shown], { spring: { duration: 0.3, bounce: 0.15 } });
   trigger.setAttribute('aria-expanded', 'true');
 }
@@ -58,7 +94,15 @@ function closeMenu(triggerOrMenu) {
   animate(menu, [ENTER.shown, ENTER.hidden], { spring: { duration: 0.18, bounce: 0 } })
     .finished.then(() => {
       menu._aeroClosing = false;
-      menu.classList.remove('aero-menu--open');
+      menu.classList.remove('aero-menu--open', 'aero-menu--portaled');
+      menu.style.top = '';
+      menu.style.left = '';
+
+      if (menu._originalParent) {
+        menu._originalParent.appendChild(menu);
+        delete menu._originalParent;
+      }
+      delete menu._dropdownRef;
     });
   triggerOf(menu)?.setAttribute('aria-expanded', 'false');
 }
@@ -110,11 +154,12 @@ function initDropdowns(root = document) {
   });
 }
 
-document.addEventListener('click', e => {
+document.addEventListener('pointerdown', e => {
   document.querySelectorAll('.aero-menu.aero-menu--open').forEach(menu => {
-    if (!menu.closest('.aero-dropdown').contains(e.target)) closeMenu(menu);
+    const dd = dropdownOf(menu);
+    if ((!dd || !dd.contains(e.target)) && !menu.contains(e.target)) closeMenu(menu);
   });
-});
+}, true);
 
 document.addEventListener('keydown', e => {
   if (e.key !== 'Escape') return;

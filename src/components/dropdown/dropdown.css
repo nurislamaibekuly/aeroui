@@ -20,6 +20,12 @@
   transform-origin: top center;
 }
 
+.aero-menu--portaled {
+  position: fixed;
+  top: auto;
+  left: auto;
+}
+
 .aero-menu--open {
   display: block;
 }
