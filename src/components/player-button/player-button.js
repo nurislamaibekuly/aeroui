@@ -35,10 +35,14 @@ const HIDE_DELAY_MS = 200; // Swift delay(0.2) before the circle fades
 const ECHO_GUARD_MS = 600; // ignore synthetic clicks right after our gesture
 // Swift withAnimation default: soft, ~half-second, (near-)critically damped.
 // This is what makes the press feel like the original instead of a snap.
-const PRESS_IN_SPRING = { duration: 0.15, bounce: 0.1 };
 const PRESS_SPRING = { duration: 0.9, bounce: 0.6 };
-// Press-down stays near-instant (like UIButton highlight): even a 60ms light
-// tap lands visibly. Only the release gets the soft spring above.
+// A spring released from rest starts at zero velocity, so its first ~30-80ms
+// barely moves (that's what makes it feel springy instead of snappy). On a
+// fast tap, press-in and release-out both fire inside that motionless
+// window and cancel each other before either becomes visible. MIN_HOLD_MS
+// floors the visual press so it always gets a moment to land before the
+// release spring plays — same trick UIKit uses for `highlighted` state.
+const MIN_HOLD_MS = 80;
 
 function isDisabled(el) {
   return el.disabled === true || el.hasAttribute('data-disabled');
@@ -94,18 +98,18 @@ function scaleTo(inst, pressed) {
   const fromLabel = currentScale(inst.label);
   const toBtn = pressed ? 0.85 : 1;
   const toLabel = pressed ? 0.9 : 1;
-  const spring = pressed ? PRESS_IN_SPRING : PRESS_SPRING;
   inst._btnAnim?.cancel();
   inst._labelAnim?.cancel();
   if (reducedMotion()) return;
   try {
     inst._btnAnim = animate(inst.el,
       [{ transform: `scale(${fromBtn})` }, { transform: `scale(${toBtn})` }],
-      { spring });
+      { spring: PRESS_SPRING });
     inst._labelAnim = animate(inst.label,
       [{ transform: `scale(${fromLabel})` }, { transform: `scale(${toLabel})` }],
-      { spring });
+      { spring: PRESS_SPRING });
   } catch {
+    // Pre-linear()-easing browsers: snap rather than break.
     inst.el.style.transform = `scale(${toBtn})`;
     inst.label.style.transform = `scale(${toLabel})`;
   }
@@ -132,6 +136,7 @@ function beginPress(inst) {
   const { el } = inst;
   if (isDisabled(el) || inst.held) return false;
   clearTimeout(inst.hideT); // cancel a stale circle-hide from a quick re-tap
+  clearTimeout(inst._releaseT); // cancel a stale pending release from a quick re-tap
   inst.held = true;
   inst.downT = performance.now();
   el.classList.add('aero-player--pressed', 'aero-player--circle');
@@ -153,11 +158,22 @@ function endPress(inst, { cancelled = false } = {}) {
   inst.held = false;
   clearInterval(inst.timer);
   inst.lastEnd = Date.now();
-  el.classList.remove('aero-player--pressed'); // scale back now …
-  scaleTo(inst, false);
-  clearTimeout(inst.hideT);
-  inst.hideT = setTimeout(() => el.classList.remove('aero-player--circle'), HIDE_DELAY_MS); // … circle fades later
-  if (!cancelled) emit(el, 'pressend', { elapsed: (performance.now() - inst.downT) / 1000 });
+  const elapsed = (performance.now() - inst.downT) / 1000;
+  el.classList.remove('aero-player--pressed'); // logical state clears now …
+
+  // Logical gesture end fires immediately and accurately timed; only the
+  // *visual* release (scale-back + circle fade) is floored below.
+  if (!cancelled) emit(el, 'pressend', { elapsed });
+
+  const heldMs = performance.now() - inst.downT;
+  const wait = Math.max(0, MIN_HOLD_MS - heldMs);
+  clearTimeout(inst._releaseT);
+  inst._releaseT = setTimeout(() => {
+    scaleTo(inst, false); // … scale back once the press has had a moment to register
+    clearTimeout(inst.hideT);
+    inst.hideT = setTimeout(() => el.classList.remove('aero-player--circle'), HIDE_DELAY_MS); // … circle fades later
+  }, wait);
+
   return true;
 }
 
@@ -170,7 +186,7 @@ function initPlayerButton(el) {
   const label = ensureLabel(el);
   const inst = {
     el, label,
-    held: false, downT: 0, timer: null, hideT: null,
+    held: false, downT: 0, timer: null, hideT: null, _releaseT: null,
     lastEnd: 0, _swap: null, _mo: null,
   };
   el._aeroPlayer = inst;
