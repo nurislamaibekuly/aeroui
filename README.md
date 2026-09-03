@@ -18,6 +18,10 @@ aeroui/
     │   ├── input/input.css
 │   ├── progress/progress.css · progress.js
 │   ├── slider/slider.css · slider.js
+│   ├── elastic-slider/elastic-slider.css · elastic-slider.js
+ │   ├── player-button/player-button.css · player-button.js
+ │   ├── marquee/marquee.css · marquee.js
+ │   ├── skip-label/skip-label.css · skip-label.js
 │   ├── tooltip/tooltip.css · tooltip.js
     │   ├── modal/modal.css · modal.js
     │   ├── segmented/segmented.css · segmented.js
@@ -231,6 +235,133 @@ updateSlider(el);   // re-sync fill after changing value programmatically
 | Class | Description |
 |---|---|
 | `aero-slider--sm` / `aero-slider--lg` | Size modifiers (17px / 27px thumb) |
+
+### Elastic slider
+
+HTML port of SwiftUI `ElasticSlider` — the track thickens and grows while dragging, and stretches elastically past the ends (opposite edge resists via `pull` ratio, height narrows at full stretch). Snaps back with a spring on release, ticks haptically at the extremes.
+
+```html
+<div class="aero-elastic" data-min="0" data-max="100" data-value="55">
+  <span class="aero-elastic-label">0:12</span>
+  <div class="aero-elastic-track"><div class="aero-elastic-fill"></div></div>
+  <span class="aero-elastic-label">-1:48</span>
+</div>
+
+<!-- bottom labels, no overshoot (matches the Swift preview) -->
+<div class="aero-elastic" data-min="0" data-max="2" data-value="0.5" data-labels="bottom" data-stretch="0">
+  ...
+</div>
+```
+
+| Attribute | Default | Description |
+|---|---|---|
+| `data-min` / `data-max` / `data-value` | `0` / `100` / `0` | Range and seed value |
+| `data-step` | `range / 100` | Keyboard step |
+| `data-labels` | `side` | `side` (labels flank the track) or `bottom` (labels row below) |
+| `data-stretch` | `9` | `maxStretch` gutter in px — overshoot distance; `0` disables elastic |
+| `data-sync-labels` | off | Labels adopt the fill color (gray at rest, tint while active) |
+| `data-haptics` | on | Set `"off"` to disable the extreme tick |
+| `data-disabled` | off | Non-interactive |
+
+Styling mirrors `ElasticSliderConfig` via CSS vars: `--elastic-active-h` (17px), `--elastic-inactive-h` (7px), `--elastic-growth` (9px), `--elastic-stretch` (9px), `--elastic-narrow` (4px), `--elastic-push` (0.2), `--elastic-pull` (0.5), `--elastic-track`, `--elastic-fill-idle`, `--elastic-fill-active`.
+
+```js
+import { getElasticValue, setElasticValue } from 'https://nurislamaibekuly.github.io/aeroui/src/components/elastic-slider/elastic-slider.js';
+
+el.addEventListener('input', e => console.log(e.detail.value));  // live drag
+el.addEventListener('change', e => console.log(e.detail.value)); // release / keyboard
+setElasticValue(el, 70, { emitEvents: true });
+getElasticValue(el);
+```
+
+Keyboard (`←/→`, `Home`/`End`, `PgUp`/`PgDn`), `role="slider"` + `aria-valuenow`, tap-to-seek, and `prefers-reduced-motion` are handled.
+
+### Player button
+
+HTML port of SwiftUI `PlayerButton` + its `PressGesture` — a fixed-size circular button for transport controls. Touch-down shrinks it (0.85 whole, 0.9 label) and fades in the tint circle; release snaps the scale back at once while the circle lingers 0.2s. Holding fires a repeat callback with hold time (for scrubbing); swapping the label (play ⇄ pause) plays a symbol-replace animation.
+
+```html
+<button class="aero-player" aria-label="Play">
+  <svg viewBox="0 0 24 24" fill="currentColor"><path d="M4 6.8 4 17.2Q4 21 7.31 19.14L18.26 12.98Q20 12 18.26 11.02L7.31 4.86Q4 3 4 6.8Z"/></svg>
+</button>
+
+<button class="aero-player" disabled aria-label="Play">…</button>
+```
+
+| Attribute | Default | Description |
+|---|---|---|
+| `data-interval` | `0.1` | `pressing` repeat seconds (`updateUnterval`) |
+| `data-haptics` | off | Tick on press — any pattern from [haptics](#haptics), or `"off"` |
+| `disabled` | off | Native disabled: gray, gestures ignored |
+
+Styling mirrors `PlayerButtonConfig` via CSS vars: `--player-size` (68px), `--player-icon` (34px), `--player-label`, `--player-tint`, `--player-pressed`, `--player-disabled`.
+
+```js
+import { initPlayerButtons, PLAYER_ICONS, setPlayerIcon } from 'https://nurislamaibekuly.github.io/aeroui/src/components/player-button/player-button.js';
+
+el.addEventListener('pressstart', () => console.log('down'));                    // onPressed
+el.addEventListener('pressing', e => console.log(e.detail.elapsed));             // onPressing(hold seconds)
+el.addEventListener('pressend', e => console.log('up after', e.detail.elapsed)); // onEnded
+
+setPlayerIcon(el, 'pause');  // SF-style play ⇄ pause swap (aria-label synced)
+// or manual: el.querySelector('.aero-player-label').innerHTML = PLAYER_ICONS.pause;
+```
+
+Notes: cancel (system interruption) resets visuals without `pressend`, matching Swift where a cancelled drag skips `onEnded`. A rapid re-tap cancels the pending circle fade. Keyboard (`Space`/`Enter`, AT click included) drives the same three events. Icon buttons need an `aria-label`.
+
+### Marquee
+
+HTML port of SwiftUI `MarqueeText` — single-line text that scrolls only when it overflows. Short text renders one static copy (no mask, configurable alignment); overflowing text loops two copies with a `spacing` gap under edge-fade masks.
+
+```html
+<div class="aero-marquee" data-start-delay="1" data-align="left" data-left-fade="40" data-right-fade="40" data-spacing="100" data-speed="30">A text that is way too long, but it scrolls</div>
+```
+
+| Attribute | Default | Description |
+|---|---|---|
+| `data-start-delay` | `1` | Seconds (`"500ms"` accepted) before the first loop |
+| `data-align` | `left` | Static-mode alignment: `left`/`center`/`right` (`leading`/`trailing` aliases) |
+| `data-left-fade` / `data-right-fade` | `40` | Edge fade widths, px |
+| `data-spacing` | `100` | Gap between the loop copies, px |
+| `data-speed` | `30` | Scroll speed, px/s (`duration = measured / speed`) |
+
+Styling mirrors `MarqueeText.Config` via CSS vars: `--marquee-left-fade` (40px), `--marquee-right-fade` (40px), `--marquee-spacing` (100px), `--marquee-speed` (30), `--marquee-start-delay` (`1s`), `--marquee-edge` (6px transparent mask inset at both edges). `data-*` attributes win over vars.
+
+```js
+import { setMarqueeText } from 'https://nurislamaibekuly.github.io/aeroui/src/components/marquee/marquee.js';
+
+setMarqueeText(el, 'New now-playing title');  // re-measures, toggles scroll/static
+```
+
+Notes: the loop scrolls `0 → -(text + spacing)` linear with no autoreverse, matching Swift's `.linear(duration: width/30).delay(startDelay).repeatForever`. Scroll vs static re-evaluates on resize and font load; `prefers-reduced-motion` forces static. The element gets an `aria-label` with the full text (loop copies are `aria-hidden`).
+
+### Skip label
+
+HTML port of SwiftUI `AnimatedForwardLabel` + `ForwardLabel` — the forward/backward transport glyphs. At rest it looks like `forward.fill` (two play triangles); on trigger a ghost triangle slides in from the left while the trailing one squeezes out to the right, then the frame snaps back. `backward` is the same view mirrored.
+
+```html
+<button class="aero-player" aria-label="Next">
+  <span class="aero-skip" data-direction="forward"></span>
+</button>
+```
+
+| Attribute | Default | Description |
+|---|---|---|
+| `data-direction` | `forward` | `forward` or `backward` (mirrored) |
+| `data-duration` | `0.3` | Full trigger stride, seconds (sweep runs `duration × 0.9`) |
+| `data-size` | `34` | Glyph frame in px (overrides `--skip-size`) |
+
+Styling via CSS var: `--skip-size` (34px). Glyph color is `currentColor`, so it follows the player button (white, with the same disabled grey).
+
+```js
+import { playSkip } from 'https://nurislamaibekuly.github.io/aeroui/src/components/skip-label/skip-label.js';
+
+button.addEventListener('pressend', () => {
+  playSkip(button.querySelector('.aero-skip'), { bouncing: true });  // Swift onEnded → trigger.toggle(bouncing:)
+});
+```
+
+Notes: `bouncing: true` (the app's choice) eases the side phases with sqrt/quadratic curves plus a protrusion overshoot; `bouncing: false` runs every phase linear. Triggers are throttled to one stride with latest-wins, so rapid taps coalesce instead of stacking — matching Swift's `throttle(stride, latest: true)`. Frame math (`side = 0.3 × size`, offsets, `lerp`) is a line-for-line port of `ForwardLabel`, including the frameless leading ghost: it absorbs the row remainder (growing `0 → size/2` across the sweep), so the row always fills its frame and the ink rests optically centered — just like Swift. `prefers-reduced-motion` renders the resting frame only.
 
 ### Accordion
 

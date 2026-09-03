@@ -1,0 +1,95 @@
+/* Marquee text — port of SwiftUI MarqueeText (AppleMusicStylePlayer).
+ *
+ * Config parity with MarqueeText.Config (defaults in parens):
+ *   --marquee-left-fade  (40px) edge-fade widths (fadeMask gradients)
+ *   --marquee-right-fade (40px)
+ *   --marquee-spacing    (100px) gap between the two loop copies (spacing)
+ *   --marquee-speed      (30) scroll speed in px/s
+ *     (Swift duration = measured width / 30)
+ *   --marquee-start-delay (1s) delay before the first loop (startDelay)
+ *   --marquee-edge       (6px) transparent inset at both mask edges
+ *     (Swift fadeMask .padding(.horizontal, 6))
+ *   --marquee-align      (left) static-mode alignment (Swift alignment;
+ *     the scrolling copies always run leading)
+ *
+ * data-* attributes on the element win over these vars (see marquee.js).
+ */
+
+.aero-marquee {
+  --marquee-left-fade: 40px;
+  --marquee-right-fade: 40px;
+  --marquee-spacing: 100px;
+  --marquee-speed: 30;
+  --marquee-start-delay: 1s;
+  --marquee-edge: 6px;
+  --marquee-align: left;
+
+  position: relative;
+  display: block;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+/* Edge-fade mask, animated mode only — static text has no mask, like Swift. */
+.aero-marquee--animated {
+  -webkit-mask-image: linear-gradient(to right,
+    transparent 0,
+    transparent var(--marquee-edge),
+    black calc(var(--marquee-edge) + var(--marquee-left-fade)),
+    black calc(100% - var(--marquee-edge) - var(--marquee-right-fade)),
+    transparent calc(100% - var(--marquee-edge)),
+    transparent 100%);
+  mask-image: linear-gradient(to right,
+    transparent 0,
+    transparent var(--marquee-edge),
+    black calc(var(--marquee-edge) + var(--marquee-left-fade)),
+    black calc(100% - var(--marquee-edge) - var(--marquee-right-fade)),
+    transparent calc(100% - var(--marquee-edge)),
+    transparent 100%);
+}
+
+/* Loop track: two copies + spacing gap, inset by leftFade (Swift
+ * animatedText .offset(x: config.leftFade)). Transform is WAAPI-driven. */
+.aero-marquee-track {
+  display: none;
+}
+
+.aero-marquee--animated .aero-marquee-track {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--marquee-spacing);
+  padding-left: var(--marquee-left-fade);
+  will-change: transform;
+}
+
+.aero-marquee-copy {
+  flex: none;
+}
+
+/* Static copy (Swift staticText): padded like the scrolling text so both
+ * modes share the same inset, aligned via --marquee-align. */
+.aero-marquee-static {
+  display: block;
+  overflow: hidden;
+  padding-left: var(--marquee-left-fade);
+  padding-right: var(--marquee-right-fade);
+  text-align: var(--marquee-align);
+}
+
+.aero-marquee--animated .aero-marquee-static {
+  display: none;
+}
+
+/* Hidden sizer for measuring the raw single-line width. */
+.aero-marquee-sizer {
+  position: absolute;
+  visibility: hidden;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .aero-marquee-track {
+    animation: none;
+  }
+}

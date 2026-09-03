@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>aeroui demo</title>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' rx='4' fill='%23000'/%3E%3Ccircle cx='8' cy='8' r='3.5' fill='%23fff'/%3E%3C/svg%3E">
-  <link rel="stylesheet" href="https://nurislamaibekuly.github.io/aeroui/src/aeroui.css">
+  <link rel="stylesheet" href="https://nurislamaibekuly.github.io/aeroui/src/aeroui.css?v=5">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
@@ -29,6 +29,20 @@
     .aero-field { margin-bottom: 20px; }
     .modal-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px; }
     .app-icon-demo { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+    .elastic-demo { width: min(420px, 90vw); }
+    .player-demo { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+    /* Demo caption only — scoped to direct children so it never matches
+     * .aero-player-label (the icon wrapper injected by player-button.js),
+     * or the icon would inherit grey instead of white. */
+    .player-demo > span { font-size: 13px; color: rgba(235, 235, 245, 0.6); }
+    .marquee-demo { display: flex; flex-direction: column; gap: 12px; width: min(320px, 80vw); }
+    .marquee-demo-box {
+      font-size: 24px;
+      padding: 8px 0;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 10px;
+      background: rgba(120, 120, 128, 0.12);
+    }
   </style>
 </head>
 <body>
@@ -79,6 +93,57 @@
     <input class="aero-slider aero-slider--sm" type="range" min="0" max="100" value="25">
     <input class="aero-slider" type="range" min="0" max="100" value="55">
     <input class="aero-slider aero-slider--lg" type="range" min="0" max="100" value="80">
+  </div>
+
+  <div class="elastic-demo">
+    <div class="aero-elastic" id="elastic-time" data-min="0" data-max="2" data-value="0.5" data-labels="bottom" data-stretch="0">
+      <span class="aero-elastic-label" id="elastic-elapsed">0.50</span>
+      <div class="aero-elastic-track"><div class="aero-elastic-fill"></div></div>
+      <span class="aero-elastic-label" id="elastic-remaining">-1.50</span>
+    </div>
+  </div>
+
+  <div class="elastic-demo">
+    <div class="aero-elastic" id="elastic-volume" data-min="0" data-max="1" data-value="0.5" data-sync-labels>
+      <span class="aero-elastic-label" aria-hidden="true">🔈</span>
+      <div class="aero-elastic-track"><div class="aero-elastic-fill"></div></div>
+      <span class="aero-elastic-label" aria-hidden="true">🔊</span>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="player-demo">
+      <button class="aero-player" disabled aria-label="Play">
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M4 6.8 4 17.2Q4 21 7.31 19.14L18.26 12.98Q20 12 18.26 11.02L7.31 4.86Q4 3 4 6.8Z"/></svg>
+      </button>
+      <span>Disabled</span>
+    </div>
+    <div class="player-demo">
+      <button class="aero-player" id="player-demo-btn" aria-label="Play">
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M4 6.8 4 17.2Q4 21 7.31 19.14L18.26 12.98Q20 12 18.26 11.02L7.31 4.86Q4 3 4 6.8Z"/></svg>
+      </button>
+      <span id="player-demo-state">Enabled · tap or hold</span>
+    </div>
+  </div>
+
+  <div class="marquee-demo">
+    <div class="aero-marquee marquee-demo-box" data-start-delay="3" data-left-fade="32" data-right-fade="32">A text that is way too long, but it scrolls</div>
+    <div class="aero-marquee marquee-demo-box" data-align="center">Normal Text</div>
+  </div>
+
+  <div class="row">
+    <div class="player-demo">
+      <button class="aero-player" id="skip-back-btn" aria-label="Previous">
+        <span class="aero-skip" data-direction="backward"></span>
+      </button>
+      <span>Previous · tap</span>
+    </div>
+    <div class="player-demo">
+      <button class="aero-player" id="skip-fwd-btn" aria-label="Next">
+        <span class="aero-skip" data-direction="forward"></span>
+      </button>
+      <span>Next · tap</span>
+    </div>
   </div>
 
   <div class="row">
@@ -224,6 +289,10 @@
     import 'https://nurislamaibekuly.github.io/aeroui/src/components/progress/progress.js';
     import 'https://nurislamaibekuly.github.io/aeroui/src/components/tooltip/tooltip.js';
     import 'https://nurislamaibekuly.github.io/aeroui/src/components/slider/slider.js';
+    import 'https://nurislamaibekuly.github.io/aeroui/src/components/elastic-slider/elastic-slider.js';
+    import 'https://nurislamaibekuly.github.io/aeroui/src/components/player-button/player-button.js';
+    import 'https://nurislamaibekuly.github.io/aeroui/src/components/marquee/marquee.js';
+    import 'https://nurislamaibekuly.github.io/aeroui/src/components/skip-label/skip-label.js';
     import 'https://nurislamaibekuly.github.io/aeroui/src/components/accordion/accordion.js';
     import 'https://nurislamaibekuly.github.io/aeroui/src/components/pie-progress/pie-progress.js';
     import { swap, PRESETS } from 'https://nurislamaibekuly.github.io/aeroui/src/core/motion.js';
@@ -231,6 +300,8 @@
     import { showToast } from 'https://nurislamaibekuly.github.io/aeroui/src/components/toast/toast.js';
     import { setProgress } from 'https://nurislamaibekuly.github.io/aeroui/src/components/progress/progress.js';
     import { setPieProgress } from 'https://nurislamaibekuly.github.io/aeroui/src/components/pie-progress/pie-progress.js';
+    import { setPlayerIcon } from 'https://nurislamaibekuly.github.io/aeroui/src/components/player-button/player-button.js';
+    import { playSkip } from 'https://nurislamaibekuly.github.io/aeroui/src/components/skip-label/skip-label.js';
     import { ProgressiveBlur } from 'https://nurislamaibekuly.github.io/aeroui/src/core/progressive-blur.js';
 
     new ProgressiveBlur('#aero-scrim-top', {
@@ -329,6 +400,34 @@
         appRaf = requestAnimationFrame(download);
       }, 1000);
     });
+    const timeSlider = document.getElementById('elastic-time');
+    const elapsed = document.getElementById('elastic-elapsed');
+    const remaining = document.getElementById('elastic-remaining');
+    timeSlider?.addEventListener('input', e => {
+      const v = e.detail.value;
+      elapsed.textContent = v.toFixed(2);
+      remaining.textContent = (v - 2).toFixed(2);
+    });
+
+    const playerBtn = document.getElementById('player-demo-btn');
+    const playerState = document.getElementById('player-demo-state');
+    let playing = false;
+    playerBtn?.addEventListener('pressing', e => {
+      playerState.textContent = `holding ${e.detail.elapsed.toFixed(1)}s`;
+    });
+    playerBtn?.addEventListener('pressend', () => {
+      playing = !playing;
+      setPlayerIcon(playerBtn, playing ? 'pause' : 'play');
+      playerState.textContent = playing ? 'Playing' : 'Paused';
+    });
+
+    // Skip buttons: PlayerButtons.swift onEnded → trigger toggle (bouncing) + action.
+    for (const id of ['skip-back-btn', 'skip-fwd-btn']) {
+      const btn = document.getElementById(id);
+      btn?.addEventListener('pressend', () => {
+        playSkip(btn.querySelector('.aero-skip'), { bouncing: true });
+      });
+    }
   </script>
 </body>
 </html>

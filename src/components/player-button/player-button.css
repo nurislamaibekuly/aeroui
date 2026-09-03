@@ -1,0 +1,100 @@
+/* Player button — port of SwiftUI PlayerButton (AppleMusicStylePlayer).
+ *
+ * Config parity with PlayerButtonConfig (defaults in parens):
+ *   --player-size    (68px)  fixed frame (config.size)
+ *   --player-icon    (34px)  svg/img label size (preview uses 34pt art)
+ *   --player-label   label at rest (labelColor = UIColor.label)
+ *   --player-tint    press circle fill (transparent = no circle, icon stays white)
+ *   --player-pressed label while pressed (defaults to --player-label)
+ *   --player-disabled label when disabled (disabledColor = secondaryLabel)
+ *
+ * Repeat interval (updateUnterval, 0.1s) is data-interval (seconds) on JS side.
+ */
+
+.aero-player {
+  --player-size: 68px;
+  --player-icon: 34px;
+  --player-label: var(--aero-fg, #fff);
+  --player-tint: transparent;
+  --player-pressed: var(--player-label);
+  --player-disabled: rgba(235, 235, 245, 0.6);
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--player-size);
+  height: var(--player-size);
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--player-label);
+  cursor: pointer;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+  -webkit-tap-highlight-color: transparent;
+  /* NOTE: transform is spring-driven from JS (Swift withAnimation parity),
+   * so it must NOT be in this transition — only the circle crossfade. */
+  transition:
+    background-color 0.35s ease,
+    color 0.3s ease;
+}
+
+/* Pressed state hook (also gates the focus ring below).
+ * Scale itself is owned by the WAAPI spring in JS. */
+.aero-player--pressed {
+  /* transform: driven by JS spring */
+}
+
+.aero-player--circle {
+  background-color: var(--player-tint);
+  color: var(--player-pressed);
+  /* Fast fade-in (destination state's timing wins); the slow base timing
+   * below handles the fade-out, so light taps still flash the circle. */
+  transition:
+    background-color 0.06s ease-out,
+    color 0.06s ease-out;
+}
+
+.aero-player-label {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  /* transform: driven by JS spring (inner 0.9 scaleEffect) */
+}
+
+/* Pin icon color to the button's color. Page-level rules like
+ * `.demo span { color: grey }` would otherwise match this injected wrapper
+ * span (higher specificity than inheritance) and recolor the currentColor icon. */
+.aero-player .aero-player-label {
+  color: inherit;
+}
+
+.aero-player-label > svg,
+.aero-player-label > img {
+  width: var(--player-icon);
+  height: var(--player-icon);
+  display: block;
+}
+
+/* Keyboard-only ring — never stuck on after a pointer press. */
+.aero-player:not(.aero-player--pressed):focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.35);
+}
+
+.aero-player:disabled {
+  color: var(--player-disabled);
+  background: transparent;
+  cursor: not-allowed;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .aero-player,
+  .aero-player-label {
+    transition: none;
+  }
+}

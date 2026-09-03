@@ -1,0 +1,63 @@
+/* Skip label — port of SwiftUI AnimatedForwardLabel + ForwardLabel
+ * (AppleMusicStylePlayer).
+ *
+ * The resting frame looks like forward.fill (two play triangles); on trigger
+ * a ghost triangle slides in from the left while the trailing one squeezes
+ * out to the right, then the frame snaps back. Backward is the same view
+ * mirrored (Swift .scaleEffect(x: -1)).
+ *
+ * Config parity:
+ *   --skip-size      (34px) glyph frame (Swift ForwardLabel size; the
+ *     expanded player uses 34, like --player-icon)
+ *   data-direction="forward|backward" (default forward)
+ *   data-duration    full trigger stride in seconds (default 0.3; Swift
+ *     animationDuration — the sweep itself runs duration*0.9)
+ *   data-size        overrides --skip-size in px
+ */
+
+.aero-skip {
+  --skip-size: 34px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  /* Swift .frame(width: size + side*2, height: size), side = 0.3*size. */
+  width: calc(var(--skip-size) * 1.6);
+  height: var(--skip-size);
+}
+
+/* Backward = forward mirrored (Swift PlayerButtonLabel .backward). */
+.aero-skip--backward {
+  transform: scaleX(-1);
+}
+
+.aero-skip-ghost,
+.aero-skip-mid {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+
+/* Middle glyph: fixed half-size box (Swift .frame(width: size/2)). */
+.aero-skip-mid {
+  width: calc(var(--skip-size) / 2);
+}
+
+/* Ghosts: JS drives leading/trailing offsets (Swift paddings) and widths.
+ * Left ghost width grows 0 → size/2 (Swift flexible resizable image
+ * absorbing the HStack remainder); right ghost shrinks size/2 → 0 (Swift
+ * .frame(width:)). svg width:100% keeps both uniformly scaled, i.e. Swift
+ * aspect-fit. Row total always equals the frame, so rest/end center by
+ * construction — no optical compensation needed. */
+.aero-skip-ghost[data-ghost='left'] svg,
+.aero-skip-mid svg,
+.aero-skip-ghost[data-ghost='right'] svg {
+  width: 100%;
+}
+
+.aero-skip svg {
+  display: block;
+  height: auto;
+}
