@@ -35,6 +35,7 @@ const HIDE_DELAY_MS = 200; // Swift delay(0.2) before the circle fades
 const ECHO_GUARD_MS = 600; // ignore synthetic clicks right after our gesture
 // Swift withAnimation default: soft, ~half-second, (near-)critically damped.
 // This is what makes the press feel like the original instead of a snap.
+const PRESS_IN_SPRING = { duration: 0.15, bounce: 0.1 };
 const PRESS_SPRING = { duration: 0.9, bounce: 0.6 };
 // Press-down stays near-instant (like UIButton highlight): even a 60ms light
 // tap lands visibly. Only the release gets the soft spring above.
@@ -93,18 +94,18 @@ function scaleTo(inst, pressed) {
   const fromLabel = currentScale(inst.label);
   const toBtn = pressed ? 0.85 : 1;
   const toLabel = pressed ? 0.9 : 1;
+  const spring = pressed ? PRESS_IN_SPRING : PRESS_SPRING;
   inst._btnAnim?.cancel();
   inst._labelAnim?.cancel();
   if (reducedMotion()) return;
   try {
     inst._btnAnim = animate(inst.el,
       [{ transform: `scale(${fromBtn})` }, { transform: `scale(${toBtn})` }],
-      { spring: PRESS_SPRING });
+      { spring });
     inst._labelAnim = animate(inst.label,
       [{ transform: `scale(${fromLabel})` }, { transform: `scale(${toLabel})` }],
-      { spring: PRESS_SPRING });
+      { spring });
   } catch {
-    // Pre-linear()-easing browsers: snap rather than break.
     inst.el.style.transform = `scale(${toBtn})`;
     inst.label.style.transform = `scale(${toLabel})`;
   }
